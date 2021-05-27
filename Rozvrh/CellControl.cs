@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 using Rozvrh.API;
@@ -29,6 +30,14 @@ namespace Rozvrh
 
         private void UpdateUi()
         {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(CellsItem.Subject));
+                uint r = BitConverter.ToUInt32(data, 0) % 256;
+                uint g = BitConverter.ToUInt32(data, 4) % 256;
+                uint b = BitConverter.ToUInt32(data, 8) % 256;
+                BackColor = Color.FromArgb((int)r, (int)g, (int)b);
+            }
             _lblTeacher.Text = CellsItem.Teacher;
             _lblSubject.Text = CellsItem.Subject;
             _lblClassRoom.Text = CellsItem.ClassRoom;
